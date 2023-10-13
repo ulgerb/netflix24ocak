@@ -1,0 +1,228 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block head %}
+<style>
+    .card img:hover {
+        border: 4px solid white;
+    }
+    
+    button:hover {
+        border: 1px solid white;
+        color: white !important;
+    }
+    .card{
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    .card>a>img{
+        width: 100%;
+        height: 200px;
+    }
+    .ds{
+        width: 100%;
+        height: 100%;
+        background-color: #00000060;
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .psettings{
+    }
+    .psettings img{
+        width: 40px !important;
+        height: 40px !important;
+        background-color: #fff;
+    }
+    .dropdown:hover .dropdown-menu{
+        display: block !important;
+    }
+</style>
+{% endblock head %}
+    
+
+
+{% block nonheader %}
+<nav class="navbar">
+    <div class="container">
+        <a href="" class="navbar-brand">
+            <img src="{% static 'img/netflix_logo.png' %}" alt="">
+        </a>
+    </div>
+</nav>
+
+<!-- profil seçimi -->
+<div class="container">
+    <div class="row w-75 m-auto bg-black bg-opacity-25">
+        <h1 class="text-center text-light">Kimler İzliyor?</h1>
+
+        <!-- PROFİLLER -->
+        {% for i in profile_list %}
+            <div class="col-3 mt-5 mb-5 d-flex">
+                <a href="browse-index.html" class="text-decoration-none text-secondary">
+                    <div class="card bg-transparent h-100">
+                        {% if i.image %}
+                        <img src="{{ i.image.url }}" class="card-img-top" style="object-fit: cover;" alt="">
+                        {% else %}
+                        <img src="{% static 'img/smile-icon.jpg' %}" class="card-img-top" style="object-fit: cover;" alt="">
+                        {% endif %}
+                            
+                        <div>
+                            <h5 class="card-title text-center ">{{ i.title }}</h5>
+                        </div>
+                        <div class="ds d-none">
+                            <div class="dropdown psettings">
+                                <img src="https://www.svgrepo.com/show/532995/pen-square.svg" alt=""  data-bs-toggle="dropdown" aria-expanded="false">
+                                
+                                <ul class="dropdown-menu bg-dark">
+                                    <li><a class="dropdown-item text-light bg-secondary" href="#" data-bs-toggle="modal" data-bs-target="#profileUpdate{{ i.id }}">Düzenle</a></li>
+                                    <li><a class="dropdown-item text-light bg-danger" href="#" data-bs-toggle="modal" data-bs-target="#deletemodal{{ i.id }}">Sil</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <!-- Modal -->
+            <div class="modal fade" id="deletemodal{{ i.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">{{ i.title }} profilini silmek istiyormusunuz?</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hayır</button>
+                            <a href="/delete-profile/{{ i.id }}" class="btn btn-danger">Evet</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal PROFİL DÜZENLE -->
+            <div class="modal fade" id="profileUpdate{{ i.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">{{ i.title }} Profili Düzenle</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <input type="hidden" name="pid" value="{{ i.id }}" >
+                                <div class="row">
+                                    <div class="col-4 d-flex flex-column" style="height: 200px;">
+                                        
+                                        {% if i.image %}
+                                        <img class="w-100 h-100 pimage" style="object-fit: cover;" src="{{ i.image.url }}" alt="">
+                                        {% else %}
+                                        <img class="w-100 h-100 pimage" style="object-fit: cover;" src="{% static 'img/smile-icon.jpg' %}" alt="">
+                                        {% endif %}
+                                            
+                                        <input type="file" name="image" class="pii form-control my-2">
+                                    </div>
+                                    <div class="col-8 d-flex flex-column justify-content-between">
+                                        <input type="text" name="title" value="{{ i.title }}" placeholder="Profil Adı" class="form-control my-3">
+                                        <div>
+                                            <input type="checkbox" name="kid" value="True" {% if i.kid %}checked{% endif %} id="kid">
+                                            <label for="kid">Çocuk Profili</label>
+                                        </div>
+                                        <button type="submit" name="submit" value="pupdate" class="btn btn-primary">Profili
+                                            Düzenle</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        {% endfor %}
+            
+        <!-- PROFİL OLUŞTUR -->
+            {% if profile_list|length < 4 %}
+            <div class="col-3 mt-5 mb-5 d-flex">
+                <div class="w-100 h-100">
+                    <button data-bs-toggle="modal" data-bs-target="#profileAdd" class="border w-100 border-success text-secondary border-3 d-flex justify-content-center align-items-center pt-3 pb-2" style="font-size: 7rem;">
+                        +
+                    </button>
+                    <div>
+                        <h5 class="card-title text-center text-secondary">Profile Oluştur</h5>
+                    </div>
+                </div>
+                
+                <!-- Modal -->
+                <div class="modal fade" id="profileAdd" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Profile Ekle</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="POST" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-4 d-flex flex-column" style="height: 200px;">
+                                            <img class="w-100 h-100 pimage" style="object-fit: cover;" src="{% static 'img/smile-icon.jpg' %}" alt="">
+                                            <input type="file" name="image" class="pii form-control my-2">
+                                        </div>
+                                        <div class="col-8 d-flex flex-column justify-content-between">
+                                            <input type="text" name="title" placeholder="Profil Adı" class="form-control my-3">
+                                            <div>
+                                                <input type="checkbox" name="kid" value="True" id="kid">
+                                                <label for="kid">Çocuk Profili</label>
+                                            </div>
+                                            <button type="submit" name="submit" value="padd" class="btn btn-primary">Profili Oluştur</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+                
+            
+        <div class="buton mb-5 text-center">
+            <button class="bg-dark text-secondary w-50 p-2" onclick="profileSettings()">Profil Yönetimi</button>
+        </div>
+    </div>
+</div>
+<script>
+    let pii = document.querySelectorAll('.pii')
+
+    pii.forEach((e)=>{
+        e.onchange = function (evt) {
+            var tgt = evt.target || window.event.srcElement,
+                files = tgt.files;
+    
+            // FileReader support
+            if (FileReader && files && files.length) {
+                var fr = new FileReader();
+                fr.onload = function () {
+                    e.previousElementSibling.src = fr.result;
+                }
+                fr.readAsDataURL(files[0]);
+            }
+        }
+    })
+    // 
+    const profileSettings = ()=>{
+        let psettings = document.querySelectorAll(".ds")
+        psettings.forEach((e)=>{
+            e.classList.toggle("d-none")
+        })
+
+    }
+</script>
+{% endblock nonheader %}
+    
