@@ -14,29 +14,55 @@ from .models import *
 def profileUser(request):
    
    profile_list = Profile.objects.filter(user=request.user)
-
+   
    if request.method =="POST":
       submit = request.POST.get("submit")
 
-      if submit == "padd":
+      if submit == "padd" and len(list(profile_list))<4:
          title=  request.POST.get("title")
          image= request.FILES.get("image")
          kid= request.POST.get("kid")
 
          if not kid:
             kid = False
+
+         if not image:
+            image = "profile/p5.jpg"
          
-         p = Profile(user=request.user,title=title, image=image, kid=kid)
+         if title:
+            p = Profile(user=request.user,title=title, image=image, kid=kid)
+            p.save()
+         else:
+            messages.error(request, "Lütfen profil ismi giriniz..")
+            
+      elif submit == "pupdate":
+         title = request.POST.get("title")
+         image = request.FILES.get("image")
+         kid = request.POST.get("kid")
+         pid = request.POST.get("pid")
+         p = Profile.objects.get(id=pid)
+         p.title = title
+         if image:
+            p.image = image
+         if not kid:
+            kid = False
+         p.kid = kid
          p.save()
-         
-         return redirect('profileUser')
-      
-   
+
+      return redirect('profileUser')
+
    context = {
        'profile_list': profile_list,
    }
    return render(request, 'user/profile.html',context)
 
+
+def profileDelete(request, pid):
+   profile = Profile.objects.get(id=pid)
+   profile.delete()
+   return redirect('profileUser')
+
+   
 def accountUser(request):
    context = {}
    return render(request, 'user/account.html',context)

@@ -28,6 +28,7 @@ urlpatterns = [
 
     # === USER ===
     path('profile/', profileUser, name="profileUser"),
+    path('delete-profile/<pid>/', profileDelete, name="profileDelete"),
     path('account/', accountUser, name="accountUser"),
     path('login/', loginUser, name="loginUser"),
     path('register/', registerUser, name="registerUser"),
