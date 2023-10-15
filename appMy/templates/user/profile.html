@@ -64,7 +64,7 @@
         <!-- PROFİLLER -->
         {% for i in profile_list %}
             <div class="col-3 mt-5 mb-5 d-flex">
-                <a href="browse-index.html" class="text-decoration-none text-secondary">
+                <a href="/netflix/{{ i.id }}/" class="text-decoration-none text-secondary">
                     <div class="card bg-transparent h-100">
                         {% if i.image %}
                         <img src="{{ i.image.url }}" class="card-img-top" style="object-fit: cover;" alt="">

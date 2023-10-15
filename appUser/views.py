@@ -64,8 +64,42 @@ def profileDelete(request, pid):
 
    
 def accountUser(request):
-   context = {}
+   profile = Profile.objects.filter(user=request.user).get(plogin=True)
+
+   
+   if request.method == "POST":
+      submit = request.POST.get("submit")
+      if submit == "emailSubmit":
+         email = request.POST.get("email")
+         # 1.YÖNTEM
+         # user = User.objects.get(username=request.user)
+         # user.first_name
+         # user.save()
+         # 2.YÖNTEM
+         request.user.email = email
+         request.user.save()  
+      elif submit == "passwordSubmit":
+         password1 = request.POST.get("password1")
+         password2 = request.POST.get("password2")
+         if password1 == password2:
+            request.user.set_password(password1)
+            request.user.save()
+            logout(request)
+            return redirect('loginUser')
+            
+      elif submit == "phoneSubmit":
+         phone = request.POST.get("phone")
+         request.user.userinfo.phone = phone
+         request.user.userinfo.save()
+      
+      return redirect('accountUser')
+   
+   context = {
+      "profile": profile,
+   }
    return render(request, 'user/account.html',context)
+
+
 
 def loginUser(request):
 
@@ -132,3 +166,7 @@ def registerUser(request):
          
    context = {}
    return render(request, 'user/register.html',context)
+
+def logoutUser(request):
+   logout(request)
+   return redirect("loginUser")

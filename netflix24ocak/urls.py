@@ -25,6 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', indexPage, name="indexPage"),
     path('netflix/', indexBrowsePage, name="indexBrowsePage"),
+    path('netflix/<pid>/', profileLogin, name="indexProfile"),
 
     # === USER ===
     path('profile/', profileUser, name="profileUser"),
@@ -32,5 +33,6 @@ urlpatterns = [
     path('account/', accountUser, name="accountUser"),
     path('login/', loginUser, name="loginUser"),
     path('register/', registerUser, name="registerUser"),
+    path('logoutUser/cıkıs', logoutUser, name="logoutUser"),
     
 ] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

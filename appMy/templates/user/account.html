@@ -40,14 +40,70 @@
                     <button>Üyeliği iptal et</button>
                 </div>
                 <div class="col">
-                    <strong>berkayulger45920@gmail.com</strong>
+                    <strong>Email: {{ request.user.email }}</strong>
                     <p>Parola:*******</p>
-                    <p>tel: 0537 692 52 42</p>
+                    <p>Telefon: {{ request.user.userinfo.phone }}</p>
                 </div>
                 <div class="col">
-                    <a href="">E-postayi değiştir</a> <br>
-                    <a href="">Parolayı değiştir</a> <br>
-                    <a href="">Telefon numarasını değiştir</a>
+                    <a href="" data-bs-toggle="modal" data-bs-target="#emailmodal">E-postayi değiştir</a> <br>
+                    <a href="" data-bs-toggle="modal" data-bs-target="#passwordmodal">Parolayı değiştir</a> <br>
+                    <a href="" data-bs-toggle="modal" data-bs-target="#telmodal">Telefon numarasını değiştir</a>
+                </div>
+                
+                <!-- Email Modal -->
+                <div class="modal fade" id="emailmodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Email Değiştir</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    <input type="text" class="form-control my-2" name="email" placeholder="Email Değiştir" value="{{ request.user.email }}">
+                                    <button type="submit" name="submit" value="emailSubmit" class="btn btn-success">Email Değiştir</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Şifre Modal -->
+                <div class="modal fade" id="passwordmodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Şifre Değiştir</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    <input type="password" class="form-control my-2" name="password1" placeholder="Password Değiştir">
+                                    <input type="password" class="form-control my-2" name="password2" placeholder="Tekrar Password">
+                                    <button type="submit" name="submit" value="passwordSubmit" class="btn btn-success">Değiştir</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Telefon Modal -->
+                <div class="modal fade" id="telmodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Telefon Değiştir</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    <input type="text" class="form-control my-2" name="phone" placeholder="Telefon Değiştir" value="{{ request.user.userinfo.phone }}">
+                                    <button type="submit" name="submit" value="phoneSubmit" class="btn btn-success">Değiştir</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
